@@ -2,7 +2,9 @@ from django.db import models
 import helpers
 from cloudinary.models import CloudinaryField
 import uuid
+from django.urls import reverse
 from django.utils.text import slugify
+
 
 helpers.cloudinary_init()
 class PublishStatus(models.TextChoices):
@@ -50,7 +52,7 @@ def get_display_name(instance, *args, **kwargs):
      model_name_slug = slugify(model_name)
      if not public_id:
           return f'{model_name_slug}'
-     return f'{model_name_slug}/{public_id}'
+     return f'{model_name_slug}-{public_id}'
 
 class Course(models.Model):
     title = models.CharField(max_length=120)
@@ -78,50 +80,45 @@ class Course(models.Model):
          super().save(*args, **kwargs)
      
     def get_display_name(self):
-         display_name = f'{self.title} - Course'
-         return display_name.replace('/', '-') 
+         return f'{self.title}-Course'
+
     
     def get_absolute_url(self):
          return self.path
     
+    def course_detail_url(self):
+         return reverse('courses:list_detail', kwargs={'course_id':self.id})
+
     @property
     def path(self):
-         return f'/courses/{self.public_id}'
+         return f'/courses-{self.public_id}'
 
     @property
     def is_published(self):
         return self.status == PublishStatus.PUBLISHED
     
-    @property
-    def image_admin(self):
-         if not self.image:
-              return ""
-         image_options = {
-              'width': 400
-         }
-         cloudinary_html = self.image.image(**image_options)
-         return cloudinary_html
-    
 
 class Lesson(models.Model):
      title = models.CharField(max_length=120)
      description = models.TextField(blank=True, null=True)
-     public_id = models.CharField(max_length=130, blank=True, null=True)
+     public_id = models.CharField(max_length=130, blank=True, null=True, db_index=True)
      course = models.ForeignKey(Course, on_delete=models.CASCADE)
      thumbnail = CloudinaryField(
-          'image', 
+         'image', 
           blank=True, 
           null=True,
           public_id_prefix=get_public_id_prefix, 
           display_name=get_display_name,
+          tags = ['image', 'thumbnail', 'lesson']
      )
      video = CloudinaryField(
           'video', 
           blank=True, 
           null=True, 
           resource_type='video',
-          public_id_prefix=get_public_id_prefix, 
+          public_id_prefix=get_public_id_prefix,
           display_name=get_display_name,
+          tags = ['video', 'lesson']
           )
      status = models.CharField(max_length=20, choices=PublishStatus.choices, default=PublishStatus.PUBLISHED)
      can_preview = models.BooleanField(default=False, help_text='if user does not have access to course, can they see this?')
@@ -138,16 +135,17 @@ class Lesson(models.Model):
           super().save(*args, **kwargs)
 
 
+     def get_absolute_url(self):
+          return self.path
+
      @property
      def path(self):
           course_path = self.course.path
           if course_path.endswith('/'):
                course_path = course_path[:-1]
-          return f'{course_path}/lessons/{self.public_id}'
+          return f'{course_path}-lessons-{self.public_id}'
      
      def get_display_name(self):
-          # Ensure no slashes in the display name
-          display_name = f'{self.title} - {self.course.get_display_name()}'
-          return display_name.replace('/', '-')  # Replace slashes here too
+          return f'{self.title}-{self.course.get_display_name()}'
 
      

@@ -1,0 +1,16 @@
+{% for course in courses %}
+<div class="course-card bg-white rounded-lg shadow-md overflow-hidden">
+    <img src="{{ course.image.url }}" class="w-full h-90 object-cover" alt="{{ course.title }}">
+    <div class="p-4">
+        <h5 class="text-xl font-semibold">{{ course.title }}</h5>
+        <p class="text-gray-700">{{ course.description|truncatewords:20 }}</p>
+        <a href="{{ course.course_detail_url }}" class="mt-4 inline-block bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600">View Details</a>
+    </div>
+</div>
+{% empty %}
+<div class="col-span-1 md:col-span-3">
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">No courses available.</strong>
+    </div>
+</div>
+{% endfor %}

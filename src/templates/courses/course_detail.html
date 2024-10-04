@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+{{ course.title }} - Course Details
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-4">{{ course.title }}</h1>
+    
+    {% if course.image %}
+        <img src="{{ course.image.url }}" alt="{{ course.title }} Image" class="w-full max-w-lg h-auto rounded-lg mb-4">
+    {% endif %}
+    
+    <p class="text-lg"><strong>Description:</strong> {{ course.description|default:"No description available." }}</p> 
+    <p class="text-lg"><strong>Access Requirement:</strong> {{ course.access }}</p> 
+    <p class="text-lg"><strong>Status:</strong> {{ course.status }}</p> 
+    <p class="text-lg"><strong>Created At:</strong> {{ course.timestamp }}</p> 
+    <p class="text-lg"><strong>Updated At:</strong> {{ course.updated }}</p> 
+
+    <hr class="my-6">
+
+    <h2 class="text-2xl font-semibold mt-8">Lessons</h2>
+    {% if course.lesson_set.count > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% include 'courses/snippets/lesson-snippet.html' with lessons=lessons %}
+        </div>
+    {% else %}
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">No lessons available for this course.</strong>
+        </div>
+    {% endif %}
+
+    <hr class="my-6">
+    
+    <a href="{% url 'courses:list' %}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course List</a>
+</div>
+{% endblock %}

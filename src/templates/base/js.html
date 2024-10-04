@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.1.0/cld-video-player.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.1.0/cld-video-player.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script defer>
+    function renderVideoElement(videoPlayerElement) {
+        // Correct method name: getAttribute
+        const currentVideoId = videoPlayerElement.getAttribute('id');
+        const videoPlayerId = `${currentVideoId}-cfe-${Math.random().toString(36).substr(2, 9)}`;
+        videoPlayerElement.setAttribute('id', videoPlayerId);
+        
+        const cloudName = videoPlayerElement.dataset.cloudName;
+        const videoUrl = videoPlayerElement.dataset.videoUrl;
+
+        if (cloudName && videoUrl) {
+            const cld = cloudinary.videoPlayer(videoPlayerId, {
+                cloud_name: cloudName
+            });
+            
+            // Correct way to load the video into the player
+            cld.source(videoUrl);
+        }
+    }
+
+    function renderAllVideos() {
+        // Fix typo in variable name
+        const videoPlayerClassName = 'cfe-video';
+        const videoPlayerElements = document.getElementsByClassName(videoPlayerClassName);
+        console.log(videoPlayerElements);
+        
+        // Iterate through the video elements and render each
+        for (let el of videoPlayerElements) {
+            console.log(el);
+            renderVideoElement(el);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderAllVideos);
+</script>

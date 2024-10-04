@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+{{ lesson.title }} - Lesson Details
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-4">{{ lesson.title }}</h1>
+    
+    {% if lesson.thumbnail %}
+        <img src="{{ lesson.thumbnail.url }}" alt="{{ lesson.title }} Thumbnail" class="w-60 h-60 rounded-lg mb-4">
+    {% endif %}
+    
+    <p class="text-lg"><strong>Description:</strong> {{ lesson.description|default:"No description available." }}</p>
+
+    {% if lesson.video %}
+        {% include 'videos/snippets/embed.html' %}
+    {% else %}
+        <p class="mt-4 text-red-500"><strong>No video available for this lesson.</strong></p>
+    {% endif %}
+
+    <hr class="my-6">
+    
+    <a href="{% url 'courses:list' %}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course List</a> <!-- Link back to course list -->
+    <a href="{{ lesson.course.course_detail_url }}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course Detail</a>
+</div>
+{% include 'base/js.html' %}
+{% endblock %}

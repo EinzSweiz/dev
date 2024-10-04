@@ -1,10 +1,9 @@
 import cloudinary
-from decouple import config
+from django.conf import settings
 
-
-CLOUD_NAME = config('CLOUD_NAME', default="")
-PUBLIC_API_KEY = config('PUBLIC_API_KEY', default="")
-SECRET_API_KEY = config('SECRET_API_KEY')
+CLOUD_NAME = settings.CLOUD_NAME
+PUBLIC_API_KEY = settings.PUBLIC_API_KEY
+SECRET_API_KEY = settings.SECRET_API_KEY
 def cloudinary_init():
     cloudinary.config( 
         cloud_name = CLOUD_NAME, 
