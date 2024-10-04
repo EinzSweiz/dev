@@ -1,6 +1,7 @@
 from typing import Any
+from helpers._cloudinary.services import get_display_video
 from django.db.models.base import Model as Model
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Course, Lesson
 from .models import PublishStatus
@@ -17,7 +18,21 @@ class CourseList(ListView):
        published_lessons = Lesson.objects.filter(course=OuterRef('pk'), status=PublishStatus.PUBLISHED)
        qs =  services.get_publish_courses()
        return qs.annotate(has_published_lessons=Exists(published_lessons)).filter(has_published_lessons=True)
+       
+#    def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         courses_with_videos = []
 
+#         for course in context['courses']:
+#             # Get the first published lesson for each course
+#             first_lesson_with_video = course.lesson_set.filter(status=PublishStatus.PUBLISHED).first()
+#             video = get_display_video(self, first_lesson_with_video) if first_lesson_with_video else None
+#             courses_with_videos.append({
+#                 'video': video
+#             })
+
+#         context['courses_with_videos'] = courses_with_videos
+#         return context
 
 class CourseDetailView(DetailView):
     model = Course
@@ -39,7 +54,15 @@ class LessonDetail(DetailView):
     context_object_name = 'lesson'
     ordering = ['-updated']
 
+
     def get_object(self, queryset=None):
         course_id = self.kwargs.get('course_id')
         lesson_id = self.kwargs.get('lesson_id')
         return get_object_or_404(Lesson, course_id=course_id, id=lesson_id, status=PublishStatus.PUBLISHED)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        video_html = get_display_video(self=self, obj=self.object)
+        if self.object.has_video:
+            context['video_embed'] = video_html
+        return context

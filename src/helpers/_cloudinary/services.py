@@ -68,3 +68,7 @@ def get_display_video(self, obj, *args, **kwargs):
     cloud_name = settings.CLOUD_NAME
     _html = tmpl.render({'video_url': cloudinary_html, 'cloud_name':cloud_name})
     return _html
+
+def get_video_for_template(self, obj, *args, **kwargs):
+    cloudinary_html = get_video_thumbnail(obj, field_name='video', width=350, height=350)
+    return cloudinary_html

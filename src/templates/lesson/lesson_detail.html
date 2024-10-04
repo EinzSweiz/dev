@@ -15,7 +15,7 @@
     <p class="text-lg"><strong>Description:</strong> {{ lesson.description|default:"No description available." }}</p>
 
     {% if lesson.video %}
-        {% include 'videos/snippets/embed.html' %}
+        {{ video_embed }}
     {% else %}
         <p class="mt-4 text-red-500"><strong>No video available for this lesson.</strong></p>
     {% endif %}

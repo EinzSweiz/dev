@@ -21,7 +21,7 @@
     <hr class="my-6">
 
     <h2 class="text-2xl font-semibold mt-8">Lessons</h2>
-    {% if course.lesson_set.count > 0 %}
+    {% if lessons.count > 0 %}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {% include 'courses/snippets/lesson-snippet.html' with lessons=lessons %}
         </div>
