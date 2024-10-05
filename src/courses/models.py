@@ -148,6 +148,9 @@ class Lesson(models.Model):
      def get_display_name(self):
           return f'{self.title}-{self.course.get_display_name()}'
      
+     @property
+     def requires_email(self):
+          return self.course.access == AccessRequirements.EMAIL_REQUIRED
 
      @property
      def is_coming_soon(self):

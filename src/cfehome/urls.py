@@ -19,10 +19,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from courses import urls as cousers_urls
+from emails import urls as emails_urls
+from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('courses/', include(cousers_urls, namespace='courses'))
+    path('courses/', include(cousers_urls, namespace='courses')),
+    path('email/', include(emails_urls, namespace='email')),
+    path('', views.home, name='home')
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+        path("__reload__/", include("django_browser_reload.urls")),
+
+    ]

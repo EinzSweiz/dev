@@ -1,0 +1,41 @@
+{% if show_form %}
+    {% if messages %}
+        <ul class="messages mb-4">
+            {% for message in messages %}
+            <li class="p-2 mb-2 rounded-md 
+                {% if message.tags == 'success' %} bg-green-100 text-green-700 border border-green-500
+                {% elif message.tags == 'error' %} bg-red-100 text-red-700 border border-red-500 
+                {% else %} bg-gray-100 text-gray-700 border border-gray-500 {% endif %}">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    <div class="bg-white p-8 rounded-lg shadow-md w-96" >
+        <form hx-post='/email/hx/login/' method="POST" action="{% url 'email:login' %}">
+            {% csrf_token %}
+            <h1 class="text-2xl font-semibold mb-6 text-center">Email Required </h1>
+            <div class="mb-4">
+                <input class='w-full py-1 border border-gray-300 rounded-md' name="email" type="email" placeholder="Your Email" required>
+            </div>
+            <button type="submit" class="w-full bg-green-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 transition duration-300">Subscribe</button>
+        </form>
+    </div>
+    {% endif %}
+
+{% else %}
+    {% if messages %}
+            <ul class="messages mb-4">
+                {% for message in messages %}
+                <li class="p-2 mb-2 rounded-md 
+                    {% if message.tags == 'success' %} bg-green-100 text-green-700 border border-green-500
+                    {% elif message.tags == 'error' %} bg-red-100 text-red-700 border border-red-500 
+                    {% else %} bg-gray-100 text-gray-700 border border-gray-500 {% endif %}">
+                    {{ message }}
+                </li>
+                {% endfor %}
+                <div hx-get='/email/hx/logout/' hx-trigger='revealed'></div>
+            </ul>
+    {% endif %}
+{% endif %}
+

@@ -15,6 +15,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_URL = config('BASE_URL', default='http://127.0.0.1:8000')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -39,17 +40,28 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #myapps
     'courses.apps.CoursesConfig',
+    'emails.apps.EmailsConfig',
+    #installed apps
+    "django_htmx",
+    'tailwind',
+    'theme',
 ]
 
+TAILWIND_APP_NAME='theme'
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+if DEBUG:
+    INSTALLED_APPS.append('django_browser_reload')
+    MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+
 
 ROOT_URLCONF = "cfehome.urls"
 
@@ -136,6 +148,7 @@ PUBLIC_API_KEY = config('PUBLIC_API_KEY', default="")
 SECRET_API_KEY = config('SECRET_API_KEY')
 
 #SMTP GMAIL
+EMAIL_ADDRESS = 'riad.sultanov.1999@gmail.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', cast=str, default=None)
 EMAIL_PORT = config('EMAIL_PORT', cast=str, default=587)

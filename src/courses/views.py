@@ -1,7 +1,6 @@
-from typing import Any
 from helpers._cloudinary.services import get_display_video
 from django.db.models.base import Model as Model
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DetailView
 from .models import Course, Lesson
 from .models import PublishStatus
@@ -47,13 +46,25 @@ class CourseDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['lessons'] = self.object.lesson_set.filter(status=PublishStatus.PUBLISHED)
         return context
-    
+
 class LessonDetail(DetailView):
     model = Lesson
     template_name = 'lesson/lesson_detail.html'
     context_object_name = 'lesson'
     ordering = ['-updated']
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        
+        email_id_exists = request.session.get('email_id')
+        self.object = self.get_object()
+
+        if self.object.requires_email and not email_id_exists:
+            request.session['next_url'] = request.build_absolute_uri()
+            return render(request, 'courses/email-required.html', {})
+        
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         course_id = self.kwargs.get('course_id')
@@ -62,7 +73,8 @@ class LessonDetail(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        video_html = get_display_video(self=self, obj=self.object)
+        
         if self.object.has_video:
-            context['video_embed'] = video_html
+            context['video_embed'] = get_display_video(self=self, obj=self.object)
+        
         return context
