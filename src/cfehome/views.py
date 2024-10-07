@@ -4,6 +4,11 @@ from django.contrib import messages
 from emails.models import Email, EmailVerification
 from emails.services import start_verification_event
 
+
+def login_view(request):
+    return render(request, 'auth/login.html', {})
+
+
 def home(request):
     form = EmailForm(request.POST or None)
     context = {

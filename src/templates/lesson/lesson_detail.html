@@ -1,29 +1,45 @@
 {% extends 'base.html' %}
 
 {% block head_title %}
-{{ lesson.title }} - Lesson Details
+    {{ lesson.title }} - Lesson Details
 {% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-4">{{ lesson.title }}</h1>
-    
-    {% if lesson.thumbnail %}
-        <img src="{{ lesson.thumbnail.url }}" alt="{{ lesson.title }} Thumbnail" class="w-60 h-60 rounded-lg mb-4">
-    {% endif %}
-    
-    <p class="text-lg"><strong>Description:</strong> {{ lesson.description|default:"No description available." }}</p>
+    <h1 class="text-3xl font-bold mb-4">{{ lesson.title }}</h1>
 
-    {% if lesson.video %}
-        {{ video_embed }}
-    {% else %}
-        <p class="mt-4 text-red-500"><strong>No video available for this lesson.</strong></p>
-    {% endif %}
+    <!-- Card layout for video and thumbnail -->
+    <div class="flex flex-col md:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-md hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 md:max-w-lg mx-auto">
+        <!-- Video Section -->
+        <div class="md:w-1/2">
+            {% if lesson.video %}
+                <div class="w-full h-full object-cover rounded-lg md:rounded-none">
+                    {{ video_embed }}
+                </div>
+            {% else %}
+                <p class="mt-4 text-red-500"><strong>No video available for this lesson.</strong></p>
+            {% endif %}
+        </div>
+
+        <!-- Image Section -->
+        <div class="md:w-1/2">
+            {% if lesson.thumbnail %}
+                <img class="w-full h-full object-cover rounded-lg md:rounded-none" src="{{ lesson.thumbnail.url }}" alt="{{ lesson.title }} Thumbnail">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Lesson Description below video and images -->
+    <div class="mt-6">
+        <p class="text-lg"><strong>Description:</strong> {{ lesson.description|default:"No description available." }}</p>
+    </div>
 
     <hr class="my-6">
     
-    <a href="{% url 'courses:list' %}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course List</a> <!-- Link back to course list -->
+    <!-- Navigation buttons -->
+    <a href="{% url 'courses:list' %}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course List</a>
     <a href="{{ lesson.course.course_detail_url }}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course Detail</a>
 </div>
+
 {% include 'base/js.html' %}
 {% endblock %}

@@ -5,34 +5,55 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-4">{{ course.title }}</h1>
-    
+<div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto my-8">
     {% if course.image %}
-        <img src="{{ course.image.url }}" alt="{{ course.title }} Image" class="w-full max-w-lg h-auto rounded-lg mb-4">
+        <a href="#">
+            <img class="p-8 rounded-t-lg" src="{{ course.image.url }}" alt="{{ course.title }} Image" />
+        </a>
     {% endif %}
     
-    <p class="text-lg"><strong>Description:</strong> {{ course.description|default:"No description available." }}</p> 
-    <p class="text-lg"><strong>Access Requirement:</strong> {{ course.access }}</p> 
-    <p class="text-lg"><strong>Status:</strong> {{ course.status }}</p> 
-    <p class="text-lg"><strong>Created At:</strong> {{ course.timestamp }}</p> 
-    <p class="text-lg"><strong>Updated At:</strong> {{ course.updated }}</p> 
+    <div class="px-5 pb-5">
+        <a href="#">
+            <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ course.title }}</h5>
+        </a>
+        <div class="mt-2.5 mb-5">
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">Description:</p>
+            <p class="text-gray-700 dark:text-gray-400">{{ course.description|default:"No description available." }}</p>
+        </div>
 
-    <hr class="my-6">
+        <div class="flex items-center justify-between">
+            <span class="text-lg font-bold text-gray-900 dark:text-white">Status: {{ course.status }}</span>
+        </div>
+        
+        <div class="flex items-center justify-between mt-4">
+            <span class="text-lg font-bold text-gray-900 dark:text-white">Access: {{ course.access }}</span>
+        </div>
 
+        <div class="mt-4 flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Created at: {{ course.timestamp }}</span>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Updated at: {{ course.updated }}</span>
+        </div>
+        
+        <div class="mt-6">
+            <a href="{% url 'courses:list' %}" class="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Back to Course List</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-6">
+
+<!-- Lessons Section -->
+<div class="container mx-auto">
     <h2 class="text-2xl font-semibold mt-8">Lessons</h2>
     {% if lessons.count > 0 %}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {% include 'courses/snippets/lesson-snippet.html' with lessons=lessons %}
         </div>
     {% else %}
-        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mt-6" role="alert">
             <strong class="font-bold">No lessons available for this course.</strong>
         </div>
     {% endif %}
-
-    <hr class="my-6">
-    
-    <a href="{% url 'courses:list' %}" class="mt-4 inline-block bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600">Back to Course List</a>
 </div>
+
 {% endblock %}
